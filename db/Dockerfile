@@ -1,0 +1,6 @@
+FROM postgres:17.2
+
+ENV POSTGRES_USER=dbadmin
+ENV POSTGRES_PASSWORD=dbadmin
+ENV POSTGRES_DB=dbip
+
