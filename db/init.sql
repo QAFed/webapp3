@@ -1,0 +1,6 @@
+
+CREATE TABLE IF NOT EXISTS ip_table (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50),
+    ip VARCHAR(50)
+);
