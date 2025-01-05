@@ -9,6 +9,14 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  flask_service:
+    build:
+      context: ./srv
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db_service
+
 volumes:
   postgres_data:
     name: postgres_data
