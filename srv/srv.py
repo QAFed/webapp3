@@ -1,21 +1,12 @@
 from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
+from db_mod import db, VMdata
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dbadmin:dbadmin@db_service/dbvm'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
-
-class VMdata(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
-    ip = db.Column(db.String(50))
-
-    def __init__(self, name, ip):
-        self.name = name
-        self.ip = ip
+db.init_app(app)
 
 @app.route('/')
 def index():
