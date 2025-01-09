@@ -6,6 +6,24 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <script>
+        function checkVM(name, ip) {
+            fetch('/check', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: name, ip: ip})
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Check result: ${data.status}\nMessage: ${data.message}\nIP: ${data.ip}\nResponse: ${JSON.stringify(data.response)}');
+            })
+            .catch(error => {
+                console.error('Error', error);
+            });
+        }
+    </script>
 </head>
 <body>
  <h2>VM Base</h2>
@@ -19,7 +37,7 @@
         <tr>
             <td>{{ vm.name }}</td>
             <td>{{ vm.ip }}</td>
-            <td><button>Ping</button></td>
+            <td><button onclick="checkVM('{{ vm.name }}', '{{ vm.ip }}')">Check</button></td>
         </tr>
         {% endfor %}
     </table>

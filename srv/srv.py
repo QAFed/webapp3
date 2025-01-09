@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from db_mod import db, VMdata, Modif
+from check_nc import CheckVm
 
 
 app = Flask(__name__)
@@ -20,8 +21,15 @@ def update_ip_table():
 
     Modif.add_name_from_ip(request.get_json())
 
-    return jsonify({'message': 'Success'}), 200
+    return jsonify({'message': 'Success'}), 201
 
+@app.route('/check', methods=['POST'])
+def check_vm():
+    if not request.is_json:
+        return jsonify({'error':'Request must be json'}), 400
+
+    check = CheckVm(request.get_json())
+    check.run()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
