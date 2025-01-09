@@ -21,7 +21,7 @@ def update_ip_table():
 
     Modif.add_name_from_ip(request.get_json())
 
-    return jsonify({'message': 'Success'}), 201
+    return jsonify({'message': 'Success'}), 200
 
 @app.route('/check', methods=['POST'])
 def check_vm():

@@ -18,6 +18,8 @@ class CheckVm:
             return jsonify({"status": "error", "message": str(e), "ip": self.ip}), 500
 
     def mod_response(self):
+        if not self.response:
+            return jsonify({"status": "error", "message": "No response from server", "ip": self.ip}), 500
         try:
             self.json_response = json.loads(self.response)
         except json.JSONDecodeError:
@@ -25,17 +27,21 @@ class CheckVm:
                 {"status": "error", "message": "Invalid JSON format from server", "response": self.response,
                  "ip": self.ip}), 500
 
-
     def compare_name(self):
+        if not self.json_response:
+            return jsonify({"status": "error", "message": "No JSON response to compare", "ip": self.ip}), 500
         if self.json_response.get('name') == self.exp_name:
             return jsonify(
                 {"status": "success", "message": "Name matches", "response": self.json_response, "ip": self.ip}), 200
         else:
             return jsonify(
-                {"status": "failure","message": "Name does not match", "response": self.json_response, "ip": self.ip}), 200
-
+                {"status": "failure", "message": "Name does not match", "response": self.json_response, "ip": self.ip}), 200
 
     def run(self):
-        self.get_data()
-        self.mod_response()
-        self.compare_name()
+        result = self.get_data()
+        if result:
+            return result  # Прекращаем выполнение, если есть ошибка
+        result = self.mod_response()
+        if result:
+            return result  # Прекращаем выполнение, если есть ошибка
+        return self.compare_name()  # Возвращаем результат сравнения
