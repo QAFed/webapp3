@@ -6,7 +6,7 @@ class CheckVm:
     def __init__(self, data):
         self.port = 8888
         self.ip = data.get('ip')
-        self.exp_name = data.get('exp_name')
+        self.exp_name = data.get('name')
         self.response = None
         self.json_response = None
 
