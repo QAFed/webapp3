@@ -26,7 +26,8 @@ send_ip_to_server() {
 
 start_listener() {
   while true; do
-    echo -e "HTTP/1.1 200 OK\nContent-Type: application/json\n\n{\"ip\": \"$(get_current_ip)\", \"name\": \"  done
+    echo -e "{\"ip\": \"$(get_current_ip)\", \"name\": \"$UNIQUE_ID\"}" | nc -l -p $LISTEN_PORT -q 1
+  done
 }
 
 # Запуск сервера для ответов на запросы

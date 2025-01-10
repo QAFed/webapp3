@@ -29,7 +29,7 @@ def check_vm():
         return jsonify({'error':'Request must be json'}), 400
 
     check = CheckVm(request.get_json())
-    check.run()
+    return check.run()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
