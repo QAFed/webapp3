@@ -1,7 +1,7 @@
 #!/bin/bash
 
 UNIQUE_ID="TST100"
-SERVER_URL="http://192.168.55.105:5000/update"
+SERVER_URL="http://192.168.55.103:5000/update"
 IP_FILE="/tmp/current_ip.txt"
 LISTEN_PORT=8888
 
@@ -26,7 +26,16 @@ send_ip_to_server() {
 
 start_listener() {
   while true; do
-    echo -e "{\"ip\": \"$(get_current_ip)\", \"name\": \"$UNIQUE_ID\"}" | nc -l -p $LISTEN_PORT -q 1
+    {
+      echo -e "HTTP/1.1 200 OK\r"
+      echo -e "Content-Type: application/json\r"
+      echo -e "\r"
+      echo -e "{\"ip\": \"$(get_current_ip)\", \"name\": \"$UNIQUE_ID\"}"
+      if [ -f "$IP_FILE" ]; then
+        rm -f "$IP_FILE"
+        echo "Deleted file: $IP_FILE after responding to a request." >&2 # Логирование удаления файла
+      fi
+    } | nc -l -p $LISTEN_PORT -q 1
   done
 }
 

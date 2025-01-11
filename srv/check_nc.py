@@ -13,13 +13,6 @@ class CheckVm:
         self.response = None
         self.json_response = None
 
-    def get_data(self):
-        try:
-            with socket.create_connection((self.ip, self.port), timeout=5) as sock:
-                self.response = sock.recv(1024).decode('utf-8').strip()
-        except Exception as e:
-            return jsonify({"status": "error", "message": str(e), "ip": self.ip}), 500
-
     def get_ip_name(self):
         try:
             url = f"http://{self.ip}:{self.port}"
@@ -29,16 +22,6 @@ class CheckVm:
         except Exception as e:
             return jsonify({"status": "error", "message": str(e), "ip": self.ip}), 500
 
-
-    def mod_response(self):
-        if not self.response:
-            return jsonify({"status": "error", "message": "No response from server", "ip": self.ip}), 500
-        try:
-            self.json_response = json.loads(self.response)
-        except json.JSONDecodeError:
-            return jsonify(
-                {"status": "error", "message": "Invalid JSON format from server", "response": self.response,
-                 "ip": self.ip}), 500
 
     def compare_name(self):
         if not self.json_response:
@@ -54,7 +37,4 @@ class CheckVm:
         result = self.get_ip_name()
         if result:
             return result  # Прекращаем выполнение, если есть ошибка
-        # result = self.mod_response()
-        # if result:
-        #     return result  # Прекращаем выполнение, если есть ошибка
         return self.compare_name()  # Возвращаем результат сравнения
