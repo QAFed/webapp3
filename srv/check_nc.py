@@ -1,6 +1,9 @@
 import socket
 import json
 from flask import jsonify
+import requests
+from pyexpat.errors import messages
+
 
 class CheckVm:
     def __init__(self, data):
@@ -16,6 +19,16 @@ class CheckVm:
                 self.response = sock.recv(1024).decode('utf-8').strip()
         except Exception as e:
             return jsonify({"status": "error", "message": str(e), "ip": self.ip}), 500
+
+    def get_ip_name(self):
+        try:
+            url = f"http://{self.ip}:{self.port}"
+            self.response = requests.get(url, timeout=3)
+            self.response.raise_for_status()
+            self.json_response = self.response.json()
+        except Exception as e:
+            return jsonify({"status": "error", "message": str(e), "ip": self.ip}), 500
+
 
     def mod_response(self):
         if not self.response:
@@ -38,10 +51,10 @@ class CheckVm:
                 {"status": "failure", "message": "Name does not match", "response": self.json_response, "ip": self.ip}), 200
 
     def run(self):
-        result = self.get_data()
+        result = self.get_ip_name()
         if result:
             return result  # Прекращаем выполнение, если есть ошибка
-        result = self.mod_response()
-        if result:
-            return result  # Прекращаем выполнение, если есть ошибка
+        # result = self.mod_response()
+        # if result:
+        #     return result  # Прекращаем выполнение, если есть ошибка
         return self.compare_name()  # Возвращаем результат сравнения
